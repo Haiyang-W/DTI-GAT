@@ -60,7 +60,7 @@ parser.add_argument('--gat_negative_slope', type=float, default=0.2,
 # Decoder
 parser.add_argument('--DTI_nn_nlayers', type=int, default=2,
                     help='Protein_nn layers num')
-parser.add_argument('--DTI_nn_nhid', type=list, default=[256],
+parser.add_argument('--DTI_nn_nhid', type=list, default=[256, 256],
                     help='DTI_nn hidden layer dim, like [200,100] for tow hidden layers')
 ###############################################################
 # data
@@ -182,7 +182,7 @@ for train_times in range(5):
             auc_score = auc(predicts, targets)
             aupr_score = aupr(predicts, targets)
         print('Epoch: {:04d}'.format(epoch + 1), 'Train_times:', train_times)
-        print("*****************test_score=", test_score, "best_socre=", best_test, "****************")
+        print("*****************test_score {:.4f} best_socre {:.4f}****************".format(test_score, best_test))
         print("All Test Score:", acc_score)
 print(args.dataset, " Optimization Finished!")
 print("Total time elapsed: {:.4f}s".format(time.time() - t_total))

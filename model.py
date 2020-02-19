@@ -81,10 +81,11 @@ class DTI_Decoder(nn.Module):
         self.dropout = dropout
         self.nlayers = nlayers
         self.decode = torch.nn.ModuleList([
-            torch.nn.Linear(Nodefeat_size if l == 0 else nhidden[l - 1], nhidden[l] if l != nlayers - 1 else 1) for l in
+            torch.nn.Linear(Nodefeat_size if l == 0 else nhidden[l - 1], nhidden[l]) for l in
             range(nlayers)])
         self.BatchNormList = torch.nn.ModuleList([
-            torch.nn.BatchNorm1d(num_features=nhidden[l]) for l in range(nlayers-1)])
+            torch.nn.BatchNorm1d(num_features=nhidden[l]) for l in range(nlayers)])
+        self.linear = torch.nn.Linear(nhidden[nlayers-1], 1)
 
     def forward(self, nodes_features):
         protein_features = nodes_features[:self.Protein_num]
@@ -96,9 +97,9 @@ class DTI_Decoder(nn.Module):
         
         for l, dti_nn in enumerate(self.decode):
             pair_nodes_features = F.relu(dti_nn(pair_nodes_features))
-            if l != self.nlayers - 1:
-                pair_nodes_features = self.BatchNormList[l](pair_nodes_features)
+            pair_nodes_features = self.BatchNormList[l](pair_nodes_features)
             pair_nodes_features = F.dropout(pair_nodes_features, self.dropout)
+        pair_nodes_features = self.linear(pair_nodes_features)
         output = pair_nodes_features.view(self.Protein_num, self.Drug_num)
         return torch.sigmoid(output)
 
