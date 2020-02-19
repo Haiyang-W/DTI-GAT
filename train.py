@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import time
 import argparse
 import numpy as np
@@ -79,6 +80,11 @@ torch.manual_seed(args.seed)
 if args.cuda:
     torch.cuda.manual_seed(args.seed)
 
+# nn layers
+p1 = re.compile(r'[[]](.*?)[]]', re.S)
+args.dnn_nhid = [int(i) for i in re.findall(p1, args.dnn_nhid).replace(' ', '').split(',')]
+args.pnn_nhid = [int(i) for i in re.findall(p1, args.pnn_nhid).replace(' ', '').split(',')]
+args.DTI_nn_nhid = [int(i) for i in re.findall(p1, args.DTI_nn_nhid).replace(' ', '').split(',')]
 # load data
 data_Path = os.path.join(args.data_path, 'mx_'+args.dataset+'.npz')
 preprocess_path = os.path.join(args.data_path, 'preprocess', args.dataset+'_com_'+str(args.common_neighbor))
