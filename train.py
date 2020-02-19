@@ -36,14 +36,14 @@ parser.add_argument('--protein_ninput', type=int, default=220,
                     help='protein vector size')
 parser.add_argument('--pnn_nlayers', type=int, default=1,
                     help='Protein_nn layers num')
-parser.add_argument('--pnn_nhid', type=list, default=[],
+parser.add_argument('--pnn_nhid', type=str, default='[]',
                     help='pnn hidden layer dim, like [200,100] for tow hidden layers')
 # Drug_NN
 parser.add_argument('--drug_ninput', type=int, default=881,
                     help='Drug fingerprint dimension')
 parser.add_argument('--dnn_nlayers', type=int, default=1,
                     help='dnn_nlayers num')
-parser.add_argument('--dnn_nhid', type=list, default=[],
+parser.add_argument('--dnn_nhid', type=str, default='[]',
                     help='dnn hidden layer dim, like [200,100] for tow hidden layers')
 # GAT
 parser.add_argument('--gat_type', type=str, default='PyG',
@@ -61,7 +61,7 @@ parser.add_argument('--gat_negative_slope', type=float, default=0.2,
 # Decoder
 parser.add_argument('--DTI_nn_nlayers', type=int, default=2,
                     help='Protein_nn layers num')
-parser.add_argument('--DTI_nn_nhid', type=list, default=[256, 256],
+parser.add_argument('--DTI_nn_nhid', type=str, default='[256, 256]',
                     help='DTI_nn hidden layer dim, like [200,100] for tow hidden layers')
 ###############################################################
 # data
@@ -82,8 +82,14 @@ if args.cuda:
 
 # nn layers
 p1 = re.compile(r'[[](.*?)[]]', re.S)
-args.dnn_nhid = [int(i) for i in re.findall(p1, args.dnn_nhid).replace(' ', '').split(',')]
-args.pnn_nhid = [int(i) for i in re.findall(p1, args.pnn_nhid).replace(' ', '').split(',')]
+if args.dnn_nhid == '[]':
+    args.dnn_nhid = []
+else:
+    args.dnn_nhid = [int(i) for i in re.findall(p1, args.dnn_nhid).replace(' ', '').split(',')]
+if args.pnn_nhid == '[]':
+    args.pnn_nhid = []
+else:
+    args.pnn_nhid = [int(i) for i in re.findall(p1, args.pnn_nhid).replace(' ', '').split(',')]
 args.DTI_nn_nhid = [int(i) for i in re.findall(p1, args.DTI_nn_nhid).replace(' ', '').split(',')]
 # load data
 data_Path = os.path.join(args.data_path, 'mx_'+args.dataset+'.npz')
