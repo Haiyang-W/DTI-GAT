@@ -173,6 +173,15 @@ Note the format model save dir as:
     document the accury, precision, recall, specificity, mcc, auc, aupr and so on  
 ]
 ```
+### Citation
+If you find our work is useful to your research, feel free to cite
+```
+
+```
+
+### Contact
+wanghaiyang@sjtu.edu.cn  or wanghaiyang672@gmail.com
+
 
 
 
