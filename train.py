@@ -214,4 +214,4 @@ with open(os.path.join(args.model_dir, 'documen.txt'), 'w') as f:
     f.write('mcc ' + str(mcc_score) + '\n')
     f.write('auc ' + str(auc_score) + '\n')
     f.write('aupr ' + str(aupr_score) + '\n')
-    f.wirte('best ave acc ' + str(np.mean(acc_score)))
+    f.write('best ave acc ' + str(np.mean(acc_score)))
