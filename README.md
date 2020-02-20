@@ -177,12 +177,42 @@ Note the format model save dir as:
 ]
 ```
 ### Result
-|Dataset|Accu|Sen|Prec|Mcc|Auc|Aupr|
+####Enzyme
+|fold ID|Accu|Sen|Prec|Mcc|Auc|Aupr|
   |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-  | enzyme | | | | | | |
-  | ion_channel | | | | | | |
-  | gpcr | | | | | | |
-  | nuc_receptor | | | | | | |
+  | set1 | | | | | | |
+  | set2 | | | | | | |
+  | set3 | | | | | | |
+  | set4 | | | | | | |
+  | set5 | | | | | | |
+  | Ave | | | | | | |
+####Ion_channel
+|fold ID|Accu|Sen|Prec|Mcc|Auc|Aupr|
+  |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+  | set1 | | | | | | |
+  | set2 | | | | | | |
+  | set3 | | | | | | |
+  | set4 | | | | | | |
+  | set5 | | | | | | |
+  | Ave | | | | | | |
+####Gpcr
+|fold ID|Accu|Sen|Prec|Mcc|Auc|Aupr|
+  |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+  | set1 | | | | | | |
+  | set2 | | | | | | |
+  | set3 | | | | | | |
+  | set4 | | | | | | |
+  | set5 | | | | | | |
+  | Ave | | | | | | |
+####Nuc_receptor
+|fold ID|Accu|Sen|Prec|Mcc|Auc|Aupr|
+  |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+  | set1 | | | | | | |
+  | set2 | | | | | | |
+  | set3 | | | | | | |
+  | set4 | | | | | | |
+  | set5 | | | | | | |
+  | Ave | | | | | | |
   
 ### Citation
 If you find our work is useful to your research, feel free to cite
