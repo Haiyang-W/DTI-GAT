@@ -176,6 +176,14 @@ Note the format model save dir as:
     document the accury, precision, recall, specificity, mcc, auc, aupr and so on  
 ]
 ```
+### Result
+|Dataset|Accu|Sen|Prec|Mcc|Auc|Aupr|
+  |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+  | enzyme | | | | | | |
+  | ion_channel | | | | | | |
+  | gpcr | | | | | | |
+  | nuc_receptor | | | | | | |
+  
 ### Citation
 If you find our work is useful to your research, feel free to cite
 ```
