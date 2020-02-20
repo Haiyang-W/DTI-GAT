@@ -178,7 +178,7 @@ Note the format model save dir as:
 ```
 ### Result
 
-####Enzyme
+Enzyme
 
 |fold ID|Accu|Sen|Prec|Mcc|Auc|Aupr|
   |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
@@ -189,7 +189,7 @@ Note the format model save dir as:
   | set5 | | | | | | |
   | Ave | | | | | | |
   
-####Ion_channel
+Ion_channel
 
 |fold ID|Accu|Sen|Prec|Mcc|Auc|Aupr|
   |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
@@ -200,7 +200,7 @@ Note the format model save dir as:
   | set5 | | | | | | |
   | Ave | | | | | | |
   
-####Gpcr
+Gpcr
 
 |fold ID|Accu|Sen|Prec|Mcc|Auc|Aupr|
   |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
@@ -211,7 +211,7 @@ Note the format model save dir as:
   | set5 | | | | | | |
   | Ave | | | | | | |
   
-####Nuc_receptor
+Nuc_receptor
 
 |fold ID|Accu|Sen|Prec|Mcc|Auc|Aupr|
   |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
