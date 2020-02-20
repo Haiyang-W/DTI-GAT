@@ -7,7 +7,6 @@ import numpy as np
 import torch.nn.functional as F
 from sklearn.model_selection import KFold
 from tqdm import tqdm
-from typing import List, Any
 
 
 def convert(o):
@@ -310,7 +309,7 @@ if __name__ == '__main__':
                         help='common neighbor threshold')
     parser.add_argument('--adj_norm', type=bool, default=True,
                         help='adj_norm')
-    parser.add_argument('--data_root', type=str, default='/home/wanghaiyang/DTI/data/mx_data/',
+    parser.add_argument('--data_root', type=str, default='./data',
                         help='data root')
     args = parser.parse_args()
     data_path = os.path.join(args.data_root, 'mx_lrf_' + args.dataset + '.npz')

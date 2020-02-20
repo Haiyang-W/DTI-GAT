@@ -1,11 +1,6 @@
-import numpy as np
-import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
-from torch.autograd import Variable
-from torch.nn.parameter import Parameter
 from gat_layers import GraphAttentionLayer, SpGraphAttentionLayer
 from torch_geometric.nn import GATConv, GCNConv
 
@@ -94,11 +89,12 @@ class DTI_Decoder(nn.Module):
         drug_features = drug_features.view(1, self.Drug_num, drug_features.shape[-1])
         drug_features = torch.repeat_interleave(drug_features, repeats=self.Protein_num, dim=0).view(self.Protein_num*self.Drug_num, -1)
         pair_nodes_features = protein_features*drug_features
-        
+
         for l, dti_nn in enumerate(self.decode):
+            pair_nodes_features = F.dropout(pair_nodes_features, self.dropout)
             pair_nodes_features = F.relu(dti_nn(pair_nodes_features))
             pair_nodes_features = self.BatchNormList[l](pair_nodes_features)
-            pair_nodes_features = F.dropout(pair_nodes_features, self.dropout)
+        pair_nodes_features = F.dropout(pair_nodes_features, self.dropout)
         pair_nodes_features = self.linear(pair_nodes_features)
         output = pair_nodes_features.view(self.Protein_num, self.Drug_num)
         return torch.sigmoid(output)

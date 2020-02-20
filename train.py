@@ -19,7 +19,7 @@ parser = argparse.ArgumentParser(description='DTI-GRAPH')
 parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='Disables CUDA training.')
 parser.add_argument('--seed', type=int, default=223, help='Random seed.')
-parser.add_argument('--epochs', type=int, default=3000,
+parser.add_argument('--epochs', type=int, default=10000,
                     help='Number of epochs to train.')
 parser.add_argument('--lr', type=float, default=0.0005,
                     help='Initial learning rate.')
@@ -59,9 +59,9 @@ parser.add_argument('--gat_nheads', type=int, default=8,
 parser.add_argument('--gat_negative_slope', type=float, default=0.2,
                     help='GAT LeakyReLU angle of the negative slope.')
 # Decoder
-parser.add_argument('--DTI_nn_nlayers', type=int, default=2,
+parser.add_argument('--DTI_nn_nlayers', type=int, default=3,
                     help='Protein_nn layers num')
-parser.add_argument('--DTI_nn_nhid', type=str, default='[256, 256]',
+parser.add_argument('--DTI_nn_nhid', type=str, default='[256,256,256]',
                     help='DTI_nn hidden layer dim, like [200,100] for tow hidden layers')
 ###############################################################
 # data
@@ -178,7 +178,7 @@ for train_times in range(5):
         test_score, test_loss, predicts, targets = test(ori_val_interact_pos, edge_index, edge_weight, ori_dti_inter_mat)
         if test_score > best_test:
             best_test = test_score
-            acc_score[train_times] = best_test
+            acc_score[train_times] = round(best_test, 4)
             save_model_path = os.path.join(save_time_fold, preprocess_path.split('/')[-1]+'_times_'+str(train_times)+'_'+
                                      str(round(best_test, 4))+'.pth.tar')
             torch.save(model.state_dict(), save_model_path)
@@ -187,12 +187,12 @@ for train_times in range(5):
             predict_target = torch.cat((predicts, targets), dim=0).detach().cpu().numpy()
             np.savetxt(save_predict_target_path, predict_target)
 
-            precision_score[train_times] = precision(predicts, targets)
-            recall_score[train_times] = recall(predicts, targets)
-            specificity_score[train_times] = specificity(predicts, targets)
-            mcc_score[train_times] = mcc(predicts, targets)
-            auc_score = auc(predicts, targets)
-            aupr_score = aupr(predicts, targets)
+            precision_score[train_times] = round(precision(predicts, targets), 4)
+            recall_score[train_times] = round(recall(predicts, targets), 4)
+            specificity_score[train_times] = round(specificity(predicts, targets), 4)
+            mcc_score[train_times] = round(mcc(predicts, targets), 4)
+            auc_score = round(auc(predicts, targets), 4)
+            aupr_score = round(aupr(predicts, targets), 4)
         print('Epoch: {:04d}'.format(epoch + 1), 'Train_times:', train_times)
         print("*****************test_score {:.4f} best_socre {:.4f}****************".format(test_score, best_test))
         print("All Test Score:", acc_score)
@@ -206,3 +206,12 @@ print("mcc score", mcc_score)
 print("auc socre", auc_score)
 print("aupr score", aupr_score)
 print("Best Ave Test: {:.4f}".format(np.mean(acc_score)))
+with open(os.path.join(args.model_dir, 'documen.txt'), 'w') as f:
+    f.write('acc ' + str(acc_score) + '\n')
+    f.write('prec ' + str(precision_score) + '\n')
+    f.write('recall ' + str(recall_score) + '\n')
+    f.write('spec ' + str(specificity_score) + '\n')
+    f.write('mcc ' + str(mcc_score) + '\n')
+    f.write('auc ' + str(auc_score) + '\n')
+    f.write('aupr ' + str(aupr_score) + '\n')
+    f.wirte('best ave acc ' + str(np.mean(acc_score)))
