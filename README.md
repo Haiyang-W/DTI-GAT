@@ -1,6 +1,6 @@
 # DTI Prediction by GAT.
 
-This repository provides the implementation of our paper: "[DTI-Graph]()," Haiyang Wang, Siqi Liu, Guangyu Zhou, Jyun-Yu Jiang and Wei Wang. (Submitted to ECCB'20).
+This repository provides the implementation of our paper: "[DTI-Graph]()," (Submitted to ECCB'20).
 
 <p align='center'>
     <img src="pipeline.png", width="640">
