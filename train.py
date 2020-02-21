@@ -85,12 +85,12 @@ p1 = re.compile(r'[[](.*?)[]]', re.S)
 if args.dnn_nhid == '[]':
     args.dnn_nhid = []
 else:
-    args.dnn_nhid = [int(i) for i in re.findall(p1, args.dnn_nhid).replace(' ', '').split(',')]
+    args.dnn_nhid = [int(i) for i in re.findall(p1, args.dnn_nhid)[0].replace(' ', '').split(',')]
 if args.pnn_nhid == '[]':
     args.pnn_nhid = []
 else:
-    args.pnn_nhid = [int(i) for i in re.findall(p1, args.pnn_nhid).replace(' ', '').split(',')]
-args.DTI_nn_nhid = [int(i) for i in re.findall(p1, args.DTI_nn_nhid).replace(' ', '').split(',')]
+    args.pnn_nhid = [int(i) for i in re.findall(p1, args.pnn_nhid)[0].replace(' ', '').split(',')]
+args.DTI_nn_nhid = [int(i) for i in re.findall(p1, args.DTI_nn_nhid)[0].replace(' ', '').split(',')]
 # load data
 data_Path = os.path.join(args.data_path, 'mx_'+args.dataset+'.npz')
 preprocess_path = os.path.join(args.data_path, 'preprocess', args.dataset+'_com_'+str(args.common_neighbor))
