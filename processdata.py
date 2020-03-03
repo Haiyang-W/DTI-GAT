@@ -261,7 +261,6 @@ def pos_transform_adj(node_num, adj, sample_type='positive',common_neibor=3):
     zeros_vec_0 = torch.zeros_like(adj[0])
     for row in tqdm(range(node_num)):
         row_adj = adj[row]
-        print(row)
         for col in range(node_num):
             col_adj = adj[col]
             neighbor_mask = row_adj + col_adj
