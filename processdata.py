@@ -179,7 +179,7 @@ def load_data(data_root, dataset='enzyme', start_epoch=0, end_epoch=2000, common
         5 json files, each for one fold
             epoch_1: adj, dti_inter_mat, interact_pos, train_index, test_index
     """
-    data_path = os.path.join(data_root, 'mx_lrf_' + dataset + '.npz')
+    data_path = os.path.join(data_root, 'data_' + dataset + '.npz')
     root_save_dir = os.path.join(data_root, 'preprocess')
     if not os.path.exists(root_save_dir):
         os.mkdir(root_save_dir)
@@ -239,8 +239,7 @@ def load_data(data_root, dataset='enzyme', start_epoch=0, end_epoch=2000, common
             with open(os.path.join(dataset_save_dir, str(epoch) + '_' + str(i) + '.json'), 'w') as f:
                 json.dump(save_dict, f, default=convert)
 
-
-def pos_transform_adj(node_num, adj, sample_type='positive',common_neibor=3):
+def parallel_pos_transform_adj(node_num, adj, sample_type='positive',common_neibor=3):
     neighbor_mask = (adj.repeat(1, node_num).view(node_num * node_num, -1) + adj.repeat(node_num, 1))  # n^2, n
     ones_vec_0 = torch.ones_like(neighbor_mask)
     zeros_vec_0 = torch.zeros_like(neighbor_mask)
@@ -255,7 +254,29 @@ def pos_transform_adj(node_num, adj, sample_type='positive',common_neibor=3):
     adj_transform = torch.where(neighbor_mask > common_neibor, ones_vec_1, zeros_vec_1).view(node_num, node_num)
     return adj_transform
 
-def neg_transform_adj(node_num, pos_adj, neg_adj, common_neibor=3):
+def pos_transform_adj(node_num, adj, sample_type='positive',common_neibor=3):
+    # neighbor_mask = (adj.repeat(1, node_num).view(node_num * node_num, -1) + adj.repeat(node_num, 1))  # n^2, n
+    adj_transform = torch.zeros_like(adj)
+    ones_vec_0 = torch.ones_like(adj[0])
+    zeros_vec_0 = torch.zeros_like(adj[0])
+    for row in tqdm(range(node_num)):
+        row_adj = adj[row]
+        print(row)
+        for col in range(node_num):
+            col_adj = adj[col]
+            neighbor_mask = row_adj + col_adj
+            if sample_type == 'positive':
+                com_num = torch.where(neighbor_mask == 2, ones_vec_0, zeros_vec_0).sum(0).item()
+            elif sample_type == 'negative':
+                com_num = torch.where(neighbor_mask == -2, ones_vec_0, zeros_vec_0).sum(0).item()
+            else:
+                print("wrong_type")
+            if com_num > common_neibor: adj_transform[row][col] = 1
+    return adj_transform
+
+
+
+def parallel_neg_transform_adj(node_num, pos_adj, neg_adj, common_neibor=3):
     trans_neg_adj = -neg_adj
     neighbor_mask = (pos_adj.repeat(1, node_num).view(node_num * node_num, -1) + trans_neg_adj.repeat(node_num, 1))  # n^2, n
     ones_vec_0 = torch.ones_like(neighbor_mask)
@@ -264,7 +285,22 @@ def neg_transform_adj(node_num, pos_adj, neg_adj, common_neibor=3):
     adj_transform = (-neighbor_mask / torch.max(neighbor_mask).item()).view(node_num, node_num)
     # adj_transform = torch.where(neighbor_mask > common_neibor, -neighbor_mask, zeros_vec_1).view(node_num, node_num)
     return adj_transform
-    
+
+
+def neg_transform_adj(node_num, pos_adj, neg_adj, common_neibor=3):
+    trans_neg_adj = -neg_adj
+    adj_transform = torch.zeros_like(pos_adj)
+    ones_vec_0 = torch.ones_like(pos_adj[0])
+    zeros_vec_0 = torch.zeros_like(pos_adj[0])
+    for row in tqdm(range(node_num)):
+        row_adj = pos_adj[row]
+        for col in range(node_num):
+            col_adj = trans_neg_adj[col]
+            neighbor_mask = row_adj + col_adj
+            adj_transform[row][col] = torch.where(neighbor_mask == 2, ones_vec_0, zeros_vec_0).sum(0).item()
+    adj_transform = (-adj_transform / torch.max(adj_transform).item())
+    return adj_transform
+
 def constr_adj(node_num, interact_index, neg_inter_index, protein_num, common_neibor, neg_common_neibor, adj_norm):
     """
     """
@@ -312,7 +348,6 @@ if __name__ == '__main__':
     parser.add_argument('--data_root', type=str, default='./data',
                         help='data root')
     args = parser.parse_args()
-    data_path = os.path.join(args.data_root, 'mx_lrf_' + args.dataset + '.npz')
     random.seed(2)
     load_data(args.data_root, dataset=args.dataset, start_epoch=args.start_epoch, end_epoch=args.end_epoch,
               common_neibor=args.common_neighbor, neg_common_neibor=args.neg_common_neighbor, adj_norm=args.adj_norm)
