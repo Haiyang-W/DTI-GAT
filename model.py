@@ -82,12 +82,11 @@ class DTI_Decoder(nn.Module):
             torch.nn.BatchNorm1d(num_features=nhidden[l]) for l in range(nlayers)])
         self.linear = torch.nn.Linear(nhidden[nlayers-1], 1)
 
-    def forward(self, nodes_features):
-        protein_features = nodes_features[:self.Protein_num]
-        drug_features = nodes_features[self.Protein_num:]
-        protein_features = torch.repeat_interleave(protein_features, repeats=self.Drug_num, dim=0)
-        drug_features = drug_features.view(1, self.Drug_num, drug_features.shape[-1])
-        drug_features = torch.repeat_interleave(drug_features, repeats=self.Protein_num, dim=0).view(self.Protein_num*self.Drug_num, -1)
+    def forward(self, nodes_features, protein_index, drug_index):
+        # protein id index in node id
+        # drug id index in node id
+        protein_features = nodes_features[protein_index]
+        drug_features = nodes_features[drug_index]
         pair_nodes_features = protein_features*drug_features
 
         for l, dti_nn in enumerate(self.decode):
@@ -95,8 +94,7 @@ class DTI_Decoder(nn.Module):
             pair_nodes_features = F.relu(dti_nn(pair_nodes_features))
             pair_nodes_features = self.BatchNormList[l](pair_nodes_features)
         pair_nodes_features = F.dropout(pair_nodes_features, self.dropout)
-        pair_nodes_features = self.linear(pair_nodes_features)
-        output = pair_nodes_features.view(self.Protein_num, self.Drug_num)
+        output = self.linear(pair_nodes_features)
         return torch.sigmoid(output)
 
 class DTI_Graph(nn.Module):
@@ -118,7 +116,7 @@ class DTI_Graph(nn.Module):
         self.BatchNorm = torch.nn.BatchNorm1d(num_features=GAT_hyper[0])
         self.LayerNorm = torch.nn.LayerNorm(GAT_hyper[0])
 
-    def forward(self, Proteins, Drugs, edge_index):
+    def forward(self, Proteins, Drugs, edge_index, protein_index, drug_index):
 
         # Protein and Drug embeding
         emb_drugs = self.drug_nn(Drugs)
@@ -131,11 +129,8 @@ class DTI_Graph(nn.Module):
         # gat
         Nodes_features = self.gat(Nodes_features, edge_index)
         # Decoder
-        DTI_Interaction_Matrix = self.DTI_Decoder(Nodes_features)
-
-        # output
-        output = []
-        output.append(DTI_Interaction_Matrix)
+        output = self.DTI_Decoder(Nodes_features, protein_index, drug_index)
+        output = output.view(-1)
         return output
 
 

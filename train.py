@@ -92,7 +92,7 @@ else:
     args.pnn_nhid = [int(i) for i in re.findall(p1, args.pnn_nhid)[0].replace(' ', '').split(',')]
 args.DTI_nn_nhid = [int(i) for i in re.findall(p1, args.DTI_nn_nhid)[0].replace(' ', '').split(',')]
 # load data
-data_Path = os.path.join(args.data_path, 'mx_'+args.dataset+'.npz')
+data_Path = os.path.join(args.data_path, 'data_'+args.dataset+'.npz')
 preprocess_path = os.path.join(args.data_path, 'preprocess', args.dataset+'_com_'+str(args.common_neighbor))
 # save dir
 if not os.path.exists(args.model_dir):
@@ -109,12 +109,14 @@ def train(epoch, link_dti_id_train, edge_index, edge_weight, train_dti_inter_mat
     t = time.time()
     model.train()
     optimizer.zero_grad()
-    output = model(protein_tensor, drug_tensor, edge_index)
     row_dti_id = link_dti_id_train.permute(1, 0)[0]
     col_dti_id = link_dti_id_train.permute(1, 0)[1]
+    protein_index = row_dti_id
+    drug_index = col_dti_id + train_dti_inter_mat.shape[0]
+    output = model(protein_tensor, drug_tensor, edge_index, protein_index, drug_index)
     Loss = nn.BCELoss()
-    loss_train = Loss(output[0][row_dti_id, col_dti_id], train_dti_inter_mat[row_dti_id, col_dti_id])
-    acc_dti_train = accuracy(output[0][row_dti_id, col_dti_id], train_dti_inter_mat[row_dti_id, col_dti_id])
+    loss_train = Loss(output, train_dti_inter_mat[row_dti_id, col_dti_id])
+    acc_dti_train = accuracy(output, train_dti_inter_mat[row_dti_id, col_dti_id])
     loss_train.backward()
     optimizer.step()
     print('Epoch {:04d} Train '.format(epoch + 1),
@@ -127,12 +129,14 @@ def test(link_dti_id_test, edge_index, edge_weight, test_dti_inter_mat):
     model.eval()
     row_dti_id = link_dti_id_test.permute(1, 0)[0]
     col_dti_id = link_dti_id_test.permute(1, 0)[1]
-    output = model(protein_tensor, drug_tensor, edge_index)
+    protein_index = row_dti_id
+    drug_index = col_dti_id + test_dti_inter_mat.shape[0]
+    output = model(protein_tensor, drug_tensor, edge_index, protein_index, drug_index)
     Loss = nn.BCELoss()
-    predicts = output[0][row_dti_id, col_dti_id]
+    predicts = output
     targets = test_dti_inter_mat[row_dti_id, col_dti_id]
     loss_test = Loss(predicts, targets)
-    acc_dti_test = accuracy(output[0][row_dti_id, col_dti_id], test_dti_inter_mat[row_dti_id, col_dti_id])
+    acc_dti_test = accuracy(output, test_dti_inter_mat[row_dti_id, col_dti_id])
     return acc_dti_test, loss_test, predicts, targets
 
 # Train model
