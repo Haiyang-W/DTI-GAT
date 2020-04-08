@@ -52,7 +52,7 @@ preprocess adjacent matrix and train/val interaction index.
 #### Original Data
 A npz file that contains protein vectors, drug fingerprints and interaction labels
 
-#####Crossvalidation data
+Crossvalidation data
 ```
 files:
   "pssm_arr": a protein vector with 220 length,
@@ -65,7 +65,7 @@ files:
 * **"int_ids"** maps to the label for this instance, either 0 or 1.
 * **"folds"** maps instance to the fold. 
 
-#####Train and Val data
+Train and Val data
 ```
 files:
   "pssm_arr": a protein vector with 220 length,
@@ -182,7 +182,7 @@ parser.add_argument('--data_path', type=str, default='./data',
 
 Both training and testing procedures can be achived by the script [`train.py`](train.py) with the above options. For example, to run DTI graph with the experimental settings reported in the paper, we can execution the following command:
 
-#### Crossvalidation
+Crossvalidation
 ```
 $ CUDA_VISIBLE_DEVICES=0 python train.py --data_path ./data --epoch 10000 --lr 0.0005 \
 --dataset enzyme --sample_num 2000 --dropout 0.3 --model_dir enzyme_com3_gn2\
@@ -190,8 +190,7 @@ $ CUDA_VISIBLE_DEVICES=0 python train.py --data_path ./data --epoch 10000 --lr 0
 --gat_noutput 256 --DTI_nn_nlayers 3 --DTI_nn_nhid [256,256,256]
 ```
 
-#### Train and Val
-Crossval setting must be matched to processdata.py
+Train and Val（Crossval setting must be matched to processdata.py）
 ```
 $ CUDA_VISIBLE_DEVICES=0 python train.py --data_path ./data --epoch 10000 --lr 0.0005 \
 --dataset enzyme --sample_num 2000 --dropout 0.3 --model_dir enzyme_com3_gn2\
