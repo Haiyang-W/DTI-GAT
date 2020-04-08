@@ -167,8 +167,27 @@ def first_spilt_label(inter, groups):
 
     return train_positive_inter_pos, val_positive_inter_pos, train_interact_pos, train_label, val_interact_pos, val_label, train_negative_inter_pos
 
+def get_groups(train_ids, val_ids):
+    """
+    :param train_ids: (N1,)
+    :param val_ids: (N2,)
+    :return:
+    groups: (N1+N2,) 0 is val, nonzero is train
+    """
+    dataset_len = len(train_ids) + len(val_ids)
+    train_len = len(train_ids)
+    groups = np.zeros(dataset_len)
+    train_foldlen = int(train_len / 4)
+    train_groups = np.ones(train_len)
+    train_groups[train_foldlen:2 * train_foldlen] *= 2
+    train_groups[2 * train_foldlen:3 * train_foldlen] *= 3
+    train_groups[3 * train_foldlen:] *= 4
+    groups[train_ids] = train_groups
 
-def load_data(data_root, dataset='enzyme', start_epoch=0, end_epoch=2000, common_neibor=3, neg_common_neibor=1, adj_norm=True):
+    return groups
+
+
+def load_data(data_root, dataset='enzyme', start_epoch=0, end_epoch=2000, common_neibor=3, neg_common_neibor=1, adj_norm=True, crossval=True):
     """
     load data
 
@@ -190,7 +209,13 @@ def load_data(data_root, dataset='enzyme', start_epoch=0, end_epoch=2000, common
     protein_data = data_file['pssm_arr'] # n, len, 20
     drug_data = data_file['drug_arr'] # n, 881
     int_label = data_file['int_ids'] # label num, 3
-    groups = data_file['folds'] # label num,
+    if crossval:
+        groups = data_file['folds'] # label num,
+    else:
+        #  generate folds by self
+        #  from data_file['train_folds'] and data_file['val_folds'] to generate group
+        #  if don't use crossval, file.npz must contain 'train_ids' and 'val_ids', shape (N,)
+        groups = get_groups(data_file['train_ids'], data_file['val_ids'])
     protein_num = len(protein_data)
     drug_num = len(drug_data)
     node_num = protein_num + drug_num
@@ -200,7 +225,8 @@ def load_data(data_root, dataset='enzyme', start_epoch=0, end_epoch=2000, common
 
     test_adj_list = []
     # construct test file
-    for i in range(5):
+    fold_num = 5 if crossval else 1
+    for i in range(fold_num):
         test_dti_inter_mat = -np.ones((protein_num, drug_num))  # [protein_num, drug_num]
         for j, inter in enumerate(test_train_interact_pos[i]):
             protein_id = inter[0]
@@ -230,7 +256,7 @@ def load_data(data_root, dataset='enzyme', start_epoch=0, end_epoch=2000, common
         dti_list, train_interact_pos, val_interact_pos = \
             add_dti_info(protein_num, drug_num, positive_sample_num, train_positive_inter_pos,
                          val_positive_inter_pos, test_val_interact_pos)
-        for i in range(5):
+        for i in range(fold_num):
             save_dict = {}
             save_dict['adj'] = test_adj_list[i]
             save_dict['dti_inter_mat'] = dti_list[i]
@@ -346,7 +372,9 @@ if __name__ == '__main__':
                         help='adj_norm')
     parser.add_argument('--data_root', type=str, default='./data',
                         help='data root')
+    parser.add_argument('--crossval', type=int, default=1,
+                        help='whether generate 5 fold')
     args = parser.parse_args()
     random.seed(2)
     load_data(args.data_root, dataset=args.dataset, start_epoch=args.start_epoch, end_epoch=args.end_epoch,
-              common_neibor=args.common_neighbor, neg_common_neibor=args.neg_common_neighbor, adj_norm=args.adj_norm)
+              common_neibor=args.common_neighbor, neg_common_neibor=args.neg_common_neighbor, adj_norm=args.adj_norm, crossval=args.crossval)

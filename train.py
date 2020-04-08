@@ -29,6 +29,8 @@ parser.add_argument('--dropout', type=float, default=0.3,
                     help='Dropout rate (1 - keep probability).')
 parser.add_argument('--model_dir', type=str, default='./enzyme_model_com3',
                     help='model save path')
+parser.add_argument('--crossvalidation', type=int, default=1,
+                    help='whether use crossvalidation or not')
 ###############################################################
 # Model hyper setting
 # Protein_NN
@@ -148,7 +150,9 @@ specificity_score = np.zeros(5)
 mcc_score = np.zeros(5)
 auc_score = np.zeros(5)
 aupr_score = np.zeros(5)
-for train_times in range(5):
+fold_num = 5 if args.crossvalidation else 1
+
+for train_times in range(fold_num):
     model = DTI_Graph(GAT_hyper=GAT_hyper, PNN_hyper=pnn_hyper, DNN_hyper=dnn_hyper, DECO_hyper=Deco_hyper,
                       Protein_num=protein_tensor.shape[0], Drug_num=drug_tensor.shape[0], dropout=args.dropout)
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
