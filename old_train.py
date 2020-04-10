@@ -9,7 +9,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from model import DTI_Graph
+from old_model import DTI_Graph
 from dataloader import load_info_data, load_pre_process
 from utils import accuracy, precision, recall, specificity, mcc, auc, aupr
 
@@ -92,7 +92,7 @@ else:
     args.pnn_nhid = [int(i) for i in re.findall(p1, args.pnn_nhid)[0].replace(' ', '').split(',')]
 args.DTI_nn_nhid = [int(i) for i in re.findall(p1, args.DTI_nn_nhid)[0].replace(' ', '').split(',')]
 # load data
-data_Path = os.path.join(args.data_path, 'mx_'+args.dataset+'.npz')
+data_Path = os.path.join(args.data_path, 'data_'+args.dataset+'.npz')
 preprocess_path = os.path.join(args.data_path, 'preprocess', args.dataset+'_com_'+str(args.common_neighbor))
 # save dir
 if not os.path.exists(args.model_dir):
