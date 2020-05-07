@@ -1,6 +1,6 @@
 # DTI Prediction by GAT.
 
-This repository provides the implementation of our paper: "[DTI-Graph]()," (Submitted to ECCB'20).
+This repository provides the implementation of our paper: "[Drug-Target Interaction Prediction with Graph Attention networks]()," (Submitted to ECCB'20).
 
 <p align='center'>
     <img src="pipeline.png", width="640">
@@ -208,7 +208,7 @@ Note the format model save dir as:
 ```
 ### Result
 
-Enzyme
+<Enzyme
 
 |fold ID|Accu|Sen|Prec|Mcc|Auc|Aupr|
   |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
@@ -250,7 +250,7 @@ Nuc_receptor
   | set3 | | | | | | |
   | set4 | | | | | | |
   | set5 | | | | | | |
-  | Ave | | | | | | |
+  | Ave | | | | | | |>
   
 ### Citation
 If you find our work is useful to your research, feel free to cite
