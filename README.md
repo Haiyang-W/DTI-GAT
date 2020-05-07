@@ -1,4 +1,4 @@
-# DTI Prediction by GAT.
+# Drug-Target Interaction Prediction with Graph Attention networks.
 
 This repository provides the implementation of our paper: "[Drug-Target Interaction Prediction with Graph Attention networks]()," (Submitted to ECCB'20).
 
