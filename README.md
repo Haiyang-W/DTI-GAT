@@ -206,51 +206,6 @@ Note the format model save dir as:
     document the accury, precision, recall, specificity, mcc, auc, aupr and so on  
 ]
 ```
-### Result
-
-<Enzyme
-
-|fold ID|Accu|Sen|Prec|Mcc|Auc|Aupr|
-  |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-  | set1 | | | | | | |
-  | set2 | | | | | | |
-  | set3 | | | | | | |
-  | set4 | | | | | | |
-  | set5 | | | | | | |
-  | Ave | | | | | | |
-  
-Ion_channel
-
-|fold ID|Accu|Sen|Prec|Mcc|Auc|Aupr|
-  |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-  | set1 | | | | | | |
-  | set2 | | | | | | |
-  | set3 | | | | | | |
-  | set4 | | | | | | |
-  | set5 | | | | | | |
-  | Ave | | | | | | |
-  
-Gpcr
-
-|fold ID|Accu|Sen|Prec|Mcc|Auc|Aupr|
-  |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-  | set1 | | | | | | |
-  | set2 | | | | | | |
-  | set3 | | | | | | |
-  | set4 | | | | | | |
-  | set5 | | | | | | |
-  | Ave | | | | | | |
-  
-Nuc_receptor
-
-|fold ID|Accu|Sen|Prec|Mcc|Auc|Aupr|
-  |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-  | set1 | | | | | | |
-  | set2 | | | | | | |
-  | set3 | | | | | | |
-  | set4 | | | | | | |
-  | set5 | | | | | | |
-  | Ave | | | | | | |>
   
 ### Citation
 If you find our work is useful to your research, feel free to cite
